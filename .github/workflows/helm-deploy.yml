@@ -1,0 +1,32 @@
+name: Helm Chart Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'helm-chart/**'
+
+jobs:
+  deploy-helm-chart:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Configure kubectl
+      run: |
+        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+        chmod 600 kubeconfig
+
+    - name: Deploy Helm chart
+      run: |
+        helm upgrade --install bashar-release helm-chart --kubeconfig kubeconfig

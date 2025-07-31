@@ -1,0 +1,62 @@
+name: Build and Deploy Helm Chart
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'helm-chart/**'
+      - '.github/workflows/**'
+      - '**Dockerfile'
+      - '**/*.py'
+  workflow_dispatch:
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: \${{ steps.set-image-tag.outputs.image-tag }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set image tag
+      id: set-image-tag
+      run: echo "image-tag=bashar:latest" >> \$GITHUB_OUTPUT
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: \${{ secrets.USER_NAME }}
+        password: \${{ secrets.USER_PASS }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: docker.io/bashar:\${{ steps.set-image-tag.outputs.image-tag }}
+
+  deploy-helm-chart:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Configure kubectl
+      run: |
+        echo "\${{ secrets.KUBE_CONFIG }}" > kubeconfig
+        chmod 600 kubeconfig
+
+    - name: Deploy Helm chart
+      run: |
+        helm upgrade --install bashar-release helm-chart --set image.tag=latest --kubeconfig kubeconfig
