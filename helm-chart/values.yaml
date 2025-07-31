@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: bashar
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: LoadBalancer
+  port: 80
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+labels:
+  place: iti
+  name: bashar
