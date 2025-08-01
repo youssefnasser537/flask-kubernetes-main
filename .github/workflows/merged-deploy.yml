@@ -68,6 +68,17 @@ jobs:
         --set image.tag=latest \
         --kubeconfig kubeconfig \
     
+    - name: Debug Deployment Issues
+      run: |
+        echo "### Pod Details ###"
+        kubectl get pods -l place=iti,name=bashar --kubeconfig kubeconfig -o wide
+        
+        echo "## Pod Events ##"
+        kubectl describe pods -l place=iti,name=bashar --kubeconfig kubeconfig
+        
+        echo "## Deployment Events ##"
+        kubectl describe deployment bashar-release-deployment --kubeconfig kubeconfig
+
     - name: Verify Deployment
       run: |
        echo "### Checking Rollout Status ###"
