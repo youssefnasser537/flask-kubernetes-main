@@ -70,14 +70,14 @@ jobs:
     
     - name: Verify Deployment
       run: |
-       echo "### All Deployments ###"
-       kubectl get deployments --all-namespaces --kubeconfig kubeconfig
+       echo "### Checking Rollout Status ###"
+       kubectl rollout status deployment/bashar-release --kubeconfig kubeconfig
     
-       echo "### Helm Release Resources ###"
-       helm get manifest bashar-release --kubeconfig kubeconfig | grep -A 3 "kind: Deployment"
+       echo "### Checking Pods ###"
+       kubectl get pods -l place=iti,name=bashar --kubeconfig kubeconfig
     
-       echo "### Pods with Labels ###"
-       kubectl get pods --show-labels --kubeconfig kubeconfig | grep "place=iti,name=bashar"
+       echo "### Checking Services ###"
+       kubectl get svc -l place=iti,name=bashar --kubeconfig kubeconfig
     
-       echo "### Helm Status ###"
-       helm status bashar-release --kubeconfig kubeconfig
+       echo "### Helm Release Info ###"
+       helm get all bashar-release --kubeconfig kubeconfig

@@ -5,5 +5,4 @@ name: {{ .Values.labels.name | quote }}
 
 {{- define "bashar-release.fullname" -}}
 {{- printf "%s-deployment" .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{ .Release.Name }}
 {{- end -}}

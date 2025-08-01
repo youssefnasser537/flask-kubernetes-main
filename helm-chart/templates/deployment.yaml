@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "bashar-release.fullname" . }}-deployment
+  name: {{ include "bashar-release.fullname" . }}
   labels:
     {{- include "bashar-release.labels" . | nindent 4 }}
 spec:
@@ -19,6 +19,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
+            {{- toYaml .Values.resources | nindent 12 }}
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
