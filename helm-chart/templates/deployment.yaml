@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "bashar-release.fullname" . }}
+  name: {{ include "bashar-release.fullname" . }}-deployment
   labels:
     {{- include "bashar-release.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "bashar-release.fullname" . }}
+      {{- include "bashar-release.labels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ include "bashar-release.fullname" . }}
+        {{- include "bashar-release.labels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
