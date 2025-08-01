@@ -76,6 +76,7 @@ jobs:
     - name: Deploy Helm chart
       run: |
         helm uninstall bashar-release --kubeconfig kubeconfig || true
+        helm upgrade --install bashar-release helm-chart \
         --set image.repository=basharsamahy/bashar \
         --set image.tag=latest \
         --kubeconfig kubeconfig \
