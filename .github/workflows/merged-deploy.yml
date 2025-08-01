@@ -41,7 +41,7 @@ jobs:
 
     - name: verify image exists
       run: |
-        docker pull basharsamahy/bashar:latest || true \ 
+        docker pull basharsamahy/bashar:latest || \ 
         (echo "Error: Image not found" && exit 1)
 
   deploy-helm-chart:
