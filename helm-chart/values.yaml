@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: bashar
-  pullPolicy: IfNotPresent
+  repository: basharsamahy/bashar
+  pullPolicy: Always
   tag: "latest"
 
 service:

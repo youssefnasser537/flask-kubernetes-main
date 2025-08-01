@@ -31,12 +31,18 @@ jobs:
        password: ${{ secrets.USER_PASS }}
 
     - name: Build and push Docker image
+      id: build-push
       uses: docker/build-push-action@v4
       with:
         context: .
         file: ./Dockerfile
         push: true
         tags: ${{ vars.USER_NAME }}/bashar:${{ github.sha }}
+
+    - name: verify image exists
+      run: |
+        docker pull basharsamahy/bashar:latest || true \ 
+        (echo "Error: Image not found" && exit 1)
 
   deploy-helm-chart:
     needs: build-and-push-image
@@ -59,7 +65,7 @@ jobs:
          chmod 600 kubeconfig
          export KUBECONFIG=$(pwd)/kubeconfig
          kubectl cluster-info
-          kubectl get nodes
+         kubectl get nodes
 
     - name: Deploy Helm chart
       run: |
@@ -67,6 +73,7 @@ jobs:
         helm upgrade --install bashar-release helm-chart \
         --set image.tag=latest \
         --kubeconfig kubeconfig \
+        --atomic --timeout 300s
     
     - name: Debug Deployment Issues
       run: |
@@ -85,11 +92,14 @@ jobs:
        kubectl rollout status deployment/bashar-release-deployment --kubeconfig kubeconfig || true
     
        echo "### Checking Pods ###"
-       kubectl get pods -l place=iti,name=bashar --kubeconfig kubeconfig
-    
+       kubectl get pods -l place=iti,name=bashar -o wide --kubeconfig kubeconfig --namespace default 
+      
+       echo "### pods logs ###"
+        kubectl logs -l place=iti,name=bashar --kubeconfig kubeconfig || echo "No logs available yet"
+
        echo "### Checking Services ###"
-       kubectl get svc -l place=iti,name=bashar --kubeconfig kubeconfig
-    
+       kubectl get svc -l place=iti,name=bashar --namespace default --kubeconfig kubeconfig
+
        echo "### Helm Resources ###"
        helm get manifest bashar-release --kubeconfig kubeconfig
     
