@@ -66,4 +66,3 @@ jobs:
         helm upgrade --install bashar-release helm-chart \
         --set image.tag=latest \
         --kubeconfig kubeconfig \
-        --kube-apiserver https://github-actions-iti-2025.global.mongocluster.cosmos.azure.com
