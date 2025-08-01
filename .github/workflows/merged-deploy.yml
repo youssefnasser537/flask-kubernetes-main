@@ -66,3 +66,11 @@ jobs:
         helm upgrade --install bashar-release helm-chart \
         --set image.tag=latest \
         --kubeconfig kubeconfig \
+    
+    - name: Verify Deployment
+      run: |
+        kubectl rollout status deployment/bashar-release --kubeconfig kubeconfig
+        kubectl get pods --kubeconfig kubeconfig
+        kubectl get svc --kubeconfig kubeconfig
+        helm get all bashar-release --kubeconfig kubeconfig
+        helm status bashar-release --kubeconfig kubeconfig
