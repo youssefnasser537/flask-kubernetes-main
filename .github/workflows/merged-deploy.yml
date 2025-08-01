@@ -58,6 +58,8 @@ jobs:
          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
          chmod 600 kubeconfig
          export KUBECONFIG=$(pwd)/kubeconfig
+         kubectl cluster-info
+          kubectl get nodes
 
     - name: Deploy Helm chart
       run: |
