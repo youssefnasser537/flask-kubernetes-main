@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "bashar-release.fullname" . }}-deployment
+  name: {{ .Release.Name }}-deployment
   labels:
     {{- include "bashar-release.labels" . | nindent 4 }}
 spec:
