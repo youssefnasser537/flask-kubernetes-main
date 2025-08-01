@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: basharsamahy/bashar
   pullPolicy: Always
-  tag: "latest"
+  tag: ${ github.sha }
 
 service:
   type: LoadBalancer
