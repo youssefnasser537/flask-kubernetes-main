@@ -40,8 +40,7 @@ jobs:
         tags: basharsamahy/bashar:${{ github.sha }}
         cache-from: type=registry,ref=${{ vars.USER_NAME }}/bashar:latest
         cache-to: type=inline
-      run: |
-         echo "image-tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+
 
     - name: verify image exists
       run: |
