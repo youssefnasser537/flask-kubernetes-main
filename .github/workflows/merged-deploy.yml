@@ -37,9 +37,11 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ vars.USER_NAME }}/bashar:${{ github.sha }}
+        tags: basharsamahy/bashar:${{ github.sha }}
         cache-from: type=registry,ref=${{ vars.USER_NAME }}/bashar:latest
         cache-to: type=inline
+      run: |
+         echo "image-tag=${{ github.sha }}" >> $GITHUB_OUTPUT
 
     - name: verify image exists
       run: |
@@ -74,7 +76,7 @@ jobs:
     - name: Deploy Helm chart
       run: |
         helm uninstall bashar-release --kubeconfig kubeconfig || true
-        helm upgrade --install bashar-release helm-chart \
+        helm upgrade --install bashar-release ./helm-chart \
         --set image.repository=basharsamahy/bashar \
         --set image.tag=${{ needs.build-and-push-image.outputs.image-tag }} \
         --kubeconfig kubeconfig \
