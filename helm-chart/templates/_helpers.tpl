@@ -1,8 +1,8 @@
-{{- define "bashar-release.labels" -}}
+{{- define "youssef-v1.labels" -}}
 place: iti
 name: bashar
 {{- end -}}
 
-{{- define "bashar-release.fullname" -}}
+{{- define "youssef-v1.fullname" -}}
 {{- .Release.Name -}}
 {{- end -}}
