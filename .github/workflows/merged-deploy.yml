@@ -88,30 +88,30 @@ jobs:
     - name: Debug Deployment Issues
       run: |
         echo "### Pod Details ###"
-        kubectl get pods -l place=iti,name=bashar --namespace bashar --kubeconfig kubeconfig -o wide
+        kubectl get pods -l place=iti,name=youssef --namespace youssef --kubeconfig kubeconfig -o wide
         
         echo "## Pod Events ##"
-        kubectl describe pods -l place=iti,name=bashar --namespace bashar --kubeconfig kubeconfig
+        kubectl describe pods -l place=iti,name=youssef --namespace youssef --kubeconfig kubeconfig
         
         echo "## Deployment Events ##"
-        kubectl describe deployment bashar-release-deployment --namespace bashar --kubeconfig kubeconfig
+        kubectl describe deployment youssef-v1-deployment --namespace youssef --kubeconfig kubeconfig
 
     - name: Verify Deployment
       run: |
        echo "### Checking Rollout Status ###"
-       kubectl rollout status deployment/bashar-release-deployment --namespace bashar --kubeconfig kubeconfig || true
+       kubectl rollout status deployment/youssef-v1-deployment --namespace youssef --kubeconfig kubeconfig || true
     
        echo "### Checking Pods ###"
-       kubectl get pods -l place=iti,name=bashar -o wide --namespace bashar --kubeconfig kubeconfig 
+       kubectl get pods -l place=iti,name=bashar -o wide --namespace youssef --kubeconfig kubeconfig 
       
        echo "### pods logs ###"
-        kubectl logs -l place=iti,name=bashar --namespace bashar --kubeconfig kubeconfig || echo "No logs available yet"
+        kubectl logs -l place=iti,name=youssef --namespace youssef --kubeconfig kubeconfig || echo "No logs available yet"
 
        echo "### Checking Services ###"
-       kubectl get svc -l place=iti,name=bashar --namespace bashar --kubeconfig kubeconfig
+       kubectl get svc -l place=iti,name=youssef --namespace youssef --kubeconfig kubeconfig
 
        echo "### Helm Resources ###"
-       helm get manifest bashar-release --namespace bashar --kubeconfig kubeconfig
+       helm get manifest youssef-v1 --namespace youssef --kubeconfig kubeconfig
     
        echo "### Helm Status ###"
-       helm status bashar-release --namespace bashar --kubeconfig kubeconfig
+       helm status youssef-v1 --namespace youssef --kubeconfig kubeconfig
