@@ -1,8 +1,8 @@
 replicaCount: 1
-namespace: bashar
+namespace: youssef
 
 image:
-  repository: basharsamahy/bashar
+  repository: youssefnasser537/bashar
   pullPolicy: Always
   tag: ${ github.sha }
 
@@ -20,4 +20,4 @@ resources:
 
 labels:
   place: iti
-  name: bashar
+  name: youssef
