@@ -29,4 +29,4 @@ jobs:
 
     - name: Deploy Helm chart
       run: |
-        helm upgrade --install bashar-release helm-chart --kubeconfig kubeconfig
+        helm upgrade --install bashar-release helm-chart --namespace bashar --create-namespace --kubeconfig kubeconfig

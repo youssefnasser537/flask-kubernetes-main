@@ -1,4 +1,5 @@
 replicaCount: 1
+namespace: bashar
 
 image:
   repository: basharsamahy/bashar

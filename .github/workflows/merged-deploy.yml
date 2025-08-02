@@ -27,7 +27,8 @@ jobs:
     - name: Docker Hub Login
       uses: docker/login-action@v2.2.0
       with:
-       username: ${{ vars.USER_NAME }}
+       registry: docker.io
+       username: ${{ secrets.USER_NAME }}
        password: ${{ secrets.USER_PASS }}
 
     - name: Build and push Docker image
@@ -78,37 +79,39 @@ jobs:
         helm uninstall bashar-release --kubeconfig kubeconfig || true
         helm upgrade --install bashar-release helm-chart \
         --set image.repository=basharsamahy/bashar \
-        --set image.tag=latest \
+        --set image.tag=${{ github.sha }} \
+        --namespace bashar \
+        --create-namespace \
         --kubeconfig kubeconfig \
-        --atomic --timeout 300s
+
     
     - name: Debug Deployment Issues
       run: |
         echo "### Pod Details ###"
-        kubectl get pods -l place=iti,name=bashar --kubeconfig kubeconfig -o wide
+        kubectl get pods -l place=iti,name=bashar --namespace bashar --kubeconfig kubeconfig -o wide
         
         echo "## Pod Events ##"
-        kubectl describe pods -l place=iti,name=bashar --kubeconfig kubeconfig
+        kubectl describe pods -l place=iti,name=bashar --namespace bashar --kubeconfig kubeconfig
         
         echo "## Deployment Events ##"
-        kubectl describe deployment bashar-release-deployment --kubeconfig kubeconfig
+        kubectl describe deployment bashar-release-deployment --namespace bashar --kubeconfig kubeconfig
 
     - name: Verify Deployment
       run: |
        echo "### Checking Rollout Status ###"
-       kubectl rollout status deployment/bashar-release-deployment --kubeconfig kubeconfig || true
+       kubectl rollout status deployment/bashar-release-deployment --namespace bashar --kubeconfig kubeconfig || true
     
        echo "### Checking Pods ###"
-       kubectl get pods -l place=iti,name=bashar -o wide --kubeconfig kubeconfig --namespace default 
+       kubectl get pods -l place=iti,name=bashar -o wide --namespace bashar --kubeconfig kubeconfig 
       
        echo "### pods logs ###"
-        kubectl logs -l place=iti,name=bashar --kubeconfig kubeconfig || echo "No logs available yet"
+        kubectl logs -l place=iti,name=bashar --namespace bashar --kubeconfig kubeconfig || echo "No logs available yet"
 
        echo "### Checking Services ###"
-       kubectl get svc -l place=iti,name=bashar --namespace default --kubeconfig kubeconfig
+       kubectl get svc -l place=iti,name=bashar --namespace bashar --kubeconfig kubeconfig
 
        echo "### Helm Resources ###"
-       helm get manifest bashar-release --kubeconfig kubeconfig
+       helm get manifest bashar-release --namespace bashar --kubeconfig kubeconfig
     
        echo "### Helm Status ###"
-       helm status bashar-release --kubeconfig kubeconfig
+       helm status bashar-release --namespace bashar --kubeconfig kubeconfig
