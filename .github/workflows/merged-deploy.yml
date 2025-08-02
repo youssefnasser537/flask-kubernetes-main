@@ -22,7 +22,7 @@ jobs:
 
     - name: Set image tag
       id: set-image-tag
-      run: echo "image-tag=bashar:latest" >> \$GITHUB_OUTPUT
+      run: echo "image-tag=youssef:latest" >> \$GITHUB_OUTPUT
 
     - name: Docker Hub Login
       uses: docker/login-action@v2.2.0
@@ -38,15 +38,15 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: basharsamahy/bashar:${{ github.sha }}
-        cache-from: type=registry,ref=${{ vars.USER_NAME }}/bashar:latest
+        tags: youssefnasser537/youssef:${{ github.sha }}
+        cache-from: type=registry,ref=${{ vars.USER_NAME }}/youssef:latest
         cache-to: type=inline
         
 
 
     - name: verify image exists
       run: |
-        if ! docker pull basharsamahy/bashar:latest; then
+        if ! docker pull youssefnasser537/youssef:latest; then
         echo "Warning: Image not found in Docker Hub, but continuing deployment"
         echo "This is normal if you're using a private registry or different tag"
         fi
@@ -76,11 +76,11 @@ jobs:
 
     - name: Deploy Helm chart
       run: |
-        helm uninstall bashar-release --kubeconfig kubeconfig || true
-        helm upgrade --install bashar-release helm-chart \
-        --set image.repository=basharsamahy/bashar \
+        helm uninstall youssef-v1 --kubeconfig kubeconfig || true
+        helm upgrade --install youssef-v1 helm-chart \
+        --set image.repository=youssefnasser537/youssef \
         --set image.tag=${{ github.sha }} \
-        --namespace bashar \
+        --namespace youssef \
         --create-namespace \
         --kubeconfig kubeconfig \
 
